@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Academy — Отчёт об экзаменах</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(10, 10, 20, 0.6), rgba(40, 20, 50, 0.7)), url('background.jpg') center/cover fixed no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .report-card {
+            width: 100%;
+            max-width: 1100px;
+            background-color: #ffffff;
+            border-radius: 42px;
+            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.6), 0 0 0 2px #9b59b6 inset;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(2px);
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at 30% 30%, rgba(155, 89, 182, 0.25), transparent 70%);
+            top: -100px;
+            right: -100px;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .report-card::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.4), transparent 70%);
+            bottom: 20px;
+            left: -60px;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #9b59b6;
+            position: relative;
+            z-index: 5;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            color: #9b59b6;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 26px;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #2c3e50 0%, #9b59b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links a {
+            background: transparent;
+            border: 2px solid transparent;
+            padding: 10px 28px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 60px;
+            color: #1e1e2f;
+            text-decoration: none;
+            transition: 0.25s ease;
+            display: inline-block;
+        }
+
+        .nav-links a.active {
+            background: #9b59b6;
+            color: white;
+            box-shadow: 0 8px 18px -6px #9b59b6;
+        }
+
+        .nav-links a:not(.active):hover {
+            border-color: #9b59b6;
+            color: #9b59b6;
+        }
+
+        .page-content {
+            padding: 40px 48px;
+            background: #f4f0fa;
+            position: relative;
+            z-index: 4;
+        }
+
+        .report-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #2c3e50;
+            border-left: 12px solid #9b59b6;
+            padding-left: 24px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 0 rgba(155, 89, 182, 0.2);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px 40px;
+            margin-bottom: 40px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .field-group.full-width {
+            grid-column: span 2;
+        }
+
+        .field-label {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #1e1e2f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .field-label i {
+            color: #9b59b6;
+            font-size: 1.4rem;
+            width: 28px;
+        }
+
+        /* Чекбоксы для экзаменов */
+        .checkbox-group {
+            background: white;
+            border: 2px solid #dcd0e6;
+            border-radius: 28px;
+            padding: 20px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 35px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #9b59b6;
+            cursor: pointer;
+        }
+
+        /* радио для результата */
+        .radio-group {
+            display: flex;
+            gap: 30px;
+            background: white;
+            padding: 12px 24px;
+            border-radius: 48px;
+            border: 2px solid #dcd0e6;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"] {
+            accent-color: #9b59b6;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .form-control {
+            background: white;
+            border: 2px solid #e0d4ec;
+            border-radius: 28px;
+            padding: 14px 22px;
+            font-size: 1rem;
+            transition: 0.2s;
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: #9b59b6;
+            box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.2);
+        }
+
+        .submit-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .discord-btn {
+            background: #5865F2;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 60px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 10px 0 #404e88, 0 10px 30px black;
+            border: 2px solid white;
+        }
+
+        .discord-btn i {
+            font-size: 2.2rem;
+            filter: drop-shadow(0 2px 0 black);
+        }
+
+        .discord-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 0 #404e88, 0 20px 35px black;
+        }
+
+        .embed-preview {
+            background: #2f3136;
+            border-left: 8px solid white;
+            border-radius: 16px;
+            padding: 24px 28px;
+            color: #dcddde;
+            font-family: 'Whitney', 'Segoe UI', sans-serif;
+            box-shadow: 0 20px 30px -10px black;
+            width: 100%;
+            max-width: 700px;
+            margin-top: 20px;
+            border-top-right-radius: 16px;
+            border-bottom-right-radius: 16px;
+            transition: 0.2s;
+        }
+
+        .embed-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .embed-field {
+            margin: 12px 0;
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #404249;
+            padding-bottom: 8px;
+        }
+
+        .embed-field-name {
+            color: #9b59b6;
+            font-weight: 600;
+            width: 180px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .embed-field-value {
+            flex: 1;
+            color: #eee;
+            word-break: break-word;
+        }
+
+        .embed-footer {
+            margin-top: 20px;
+            color: #72767d;
+            font-size: 0.85rem;
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid #404249;
+            padding-top: 16px;
+        }
+
+        .dot-pattern {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            opacity: 0.2;
+            font-size: 30px;
+            color: #9b59b6;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @media (max-width: 800px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .field-group.full-width {
+                grid-column: span 1;
+            }
+            .checkbox-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-card">
+        <div class="dot-pattern"><i class="fas fa-plus"></i> <i class="fas fa-circle"></i> <i class="fas fa-plus"></i></div>
+
+        <div class="header">
+            <div class="logo-area">
+                <i class="fas fa-hospital-user logo-icon"></i>
+                <span class="logo-text">HOSPITAL ACADEMY</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+                <a href="report.html"><i class="fas fa-file-medical-alt"></i> Набор</a>
+                <a href="exam-report.html" class="active"><i class="fas fa-graduation-cap"></i> Экзамены</a>
+                <a href="weekly-report.html"><i class="fas fa-graduation-cap"></i> Еженедельный отчёт </a>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <h2 class="report-title"><i class="fas fa-clipboard-list" style="margin-right: 20px; color:#9b59b6;"></i> Отчёт об экзаменах</h2>
+
+            <div class="form-grid">
+                <!-- 👨‍⚕️ Кто принимал экзамен -->
+                <div class="field-group">
+                    <span class="field-label"><i class="fas fa-user-md"></i> Кто принимал экзамен?</span>
+                    <input type="text" class="form-control" id="examiner" placeholder="Имя Фамилия | CID" value="">
+                </div>
+
+                <!-- 🧑‍🎓 У кого принимали? -->
+                <div class="field-group">
+                    <span class="field-label"><i class="fas fa-user-graduate"></i> У кого принимали?</span>
+                    <input type="text" class="form-control" id="student" placeholder="Имя Фамилия | CID" value="">
+                </div>
+
+                <!-- 📚 Список экзаменов (множественный выбор) -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-book"></i> Список экзаменов</span>
+                    <div class="checkbox-group" id="examCheckboxes">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="exam" value="📕 Клятва Врача"> 📕 Клятва Врача
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="exam" value="📔 Устав"> 📔 Устав
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="exam" value="💊 Медикаменты"> 💊 Медикаменты
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="exam" value="📗 Тен-коды"> 📗 Тен-коды
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="exam" value="🚑 Транспорт больницы"> 🚑 Транспорт больницы
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="exam" value="📘 Положение об использовании радиосвязи"> 📘 Положение об использовании радиосвязи
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 📌 Результат (Сдал / Не сдал) -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-clipboard-check"></i> Результат</span>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="result" value="Сдал ✅"> <span style="color: #27ae60;">✅ Сдал</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="result" value="Не сдал ❌"> <span style="color: #c0392b;">❌ Не сдал</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-area">
+                <button class="discord-btn" id="sendExamReportBtn">
+                    <i class="fab fa-discord"></i> Отправить отчёт в Discord
+                </button>
+
+                <!-- Embed предпросмотр -->
+                <div class="embed-preview" id="embedPreview">
+                    <div class="embed-title">📋 Отчёт об экзаменах</div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">👨‍⚕️ Принимал</span>
+                        <span class="embed-field-value" id="previewExaminer">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">🧑‍🎓 Студент</span>
+                        <span class="embed-field-value" id="previewStudent">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">📚 Экзамены</span>
+                        <span class="embed-field-value" id="previewExams">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">📌 Результат</span>
+                        <span class="embed-field-value" id="previewResult">—</span>
+                    </div>
+                    <div class="embed-footer">
+                        <span>Hospital Academy</span>
+                        <span>🕒 только что</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ⚠️ ВСТАВЬТЕ СВОЙ WEBHOOK URL СЮДА
+    const webhookUrl = 'https://discord.com/api/webhooks/1475920270492565665/Jvw_ng5hLZqbp9ZPCwDrohTrtDuvHpDYQbq-8VgqEnfCmsUNR8brbpuohb20U9QRwiN8';
+
+    function getSelectedExams() {
+        const checkboxes = document.querySelectorAll('input[name="exam"]:checked');
+        const exams = Array.from(checkboxes).map(cb => cb.value);
+        return exams.length ? exams.join(', ') : '';
+    }
+
+    function validateExamForm() {
+        const examiner = document.getElementById('examiner').value.trim();
+        const student = document.getElementById('student').value.trim();
+        const exams = getSelectedExams();
+        const resultRadio = document.querySelector('input[name="result"]:checked');
+
+        if (!examiner) { alert('Укажите, кто принимал экзамен.'); return false; }
+        if (!student) { alert('Укажите, у кого принимали экзамен.'); return false; }
+        if (!exams) { alert('Выберите хотя бы один экзамен.'); return false; }
+        if (!resultRadio) { alert('Выберите результат.'); return false; }
+        return true;
+    }
+
+    function updateExamEmbed() {
+        document.getElementById('previewExaminer').innerText = document.getElementById('examiner').value.trim() || '—';
+        document.getElementById('previewStudent').innerText = document.getElementById('student').value.trim() || '—';
+        document.getElementById('previewExams').innerText = getSelectedExams() || '—';
+        const resultRadio = document.querySelector('input[name="result"]:checked');
+        document.getElementById('previewResult').innerText = resultRadio ? resultRadio.value : '—';
+    }
+
+    document.querySelectorAll('.form-control, input[name="exam"], input[name="result"]').forEach(el => {
+        el.addEventListener('input', updateExamEmbed);
+        el.addEventListener('change', updateExamEmbed);
+    });
+
+    document.getElementById('sendExamReportBtn').addEventListener('click', function() {
+        if (!validateExamForm()) return;
+
+        updateExamEmbed();
+
+        const examiner = document.getElementById('examiner').value.trim();
+        const student = document.getElementById('student').value.trim();
+        const exams = getSelectedExams();
+        const result = document.querySelector('input[name="result"]:checked').value;
+
+        const embed = {
+            title: '📋 Отчёт об экзаменах',
+            color: 0x9b59b6,
+            fields: [
+                { name: '👨‍⚕️ Принимал', value: examiner, inline: false },
+                { name: '🧑‍🎓 Студент', value: student, inline: false },
+                { name: '📚 Экзамены', value: exams, inline: false },
+                { name: '📌 Результат', value: result, inline: false }
+            ],
+            footer: { text: 'Hospital Academy' },
+            timestamp: new Date().toISOString()
+        };
+
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ embeds: [embed] })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('✅ Отчёт об экзаменах успешно отправлен в Discord!');
+            } else {
+                alert('❌ Ошибка при отправке. Проверьте Webhook URL.');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert('❌ Ошибка сети или неверный Webhook URL.');
+        });
+    });
+
+    window.addEventListener('load', updateExamEmbed);
+</script>
+</body>
+</html>
