@@ -360,6 +360,12 @@
                     <span class="field-label"><i class="fas fa-bullhorn"></i> Пост в Холле 1 час+ (скриншоты каждые 20 минут, минимум 3)</span>
                     <textarea class="form-control" id="hallPostScreens" rows="3" placeholder="Ссылки на скриншоты (3 и более)"></textarea>
                 </div>
+
+                <!-- Участие или проведение лекций -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-chalkboard-teacher"></i> Участие или проведение лекций (ссылка)</span>
+                    <textarea class="form-control" id="lectureScreens" rows="2" placeholder="Ссылки на скриншоты лекций"></textarea>
+                </div>
             </div>
 
             <div class="submit-area">
@@ -394,6 +400,10 @@
                         <span class="embed-field-name">📢 Пост в Холле</span>
                         <span class="embed-field-value" id="previewHallPost">—</span>
                     </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">📚 Лекции</span>
+                        <span class="embed-field-value" id="previewLecture">—</span>
+                    </div>
                     <div class="embed-footer">
                         <span>Hospital Academy</span>
                         <span>🕒 только что</span>
@@ -403,114 +413,106 @@
         </div>
     </div>
 
-<script>
-    // ⚠️ ВСТАВЬТЕ СВОЙ WEBHOOK URL СЮДА
-    const webhookUrl = 'https://discord.com/api/webhooks/1432858037835665639/Q5G6uC6QYZ_wVzMPPliEPAy5BJpcjx0lGTxlupAI8pOVVlYA1oXN2j-zhFlzykpJQQS0';
+    <script>
+        // ⚠️ ВСТАВЬТЕ СВОЙ WEBHOOK URL
+        const webhookUrl = 'https://discord.com/api/webhooks/1432858037835665639/Q5G6uC6QYZ_wVzMPPliEPAy5BJpcjx0lGTxlupAI8pOVVlYA1oXN2j-zhFlzykpJQQS0';
 
-    // Функция проверки заполнения всех полей
-    function validateWeeklyForm() {
-        const fields = [
-            'fullnameCid',
-            'dependencyScreens',
-            'mpGmpScreens',
-            'armyRecruitScreens',
-            'reviveScreens',
-            'hallPostScreens'
-        ];
-        for (let id of fields) {
-            const value = document.getElementById(id).value.trim();
-            if (!value) {
-                let fieldName = '';
-                switch (id) {
-                    case 'fullnameCid': fieldName = 'Имя и Фамилия | CID'; break;
-                    case 'dependencyScreens': fieldName = 'Зависимость (скриншоты)'; break;
-                    case 'mpGmpScreens': fieldName = 'Участие в МП/ГМП'; break;
-                    case 'armyRecruitScreens': fieldName = 'Участие в наборе Армии'; break;
-                    case 'reviveScreens': fieldName = 'Реанимация'; break;
-                    case 'hallPostScreens': fieldName = 'Пост в Холле'; break;
+        function validateWeeklyForm() {
+            const fields = [
+                'fullnameCid',
+                'dependencyScreens',
+                'mpGmpScreens',
+                'armyRecruitScreens',
+                'reviveScreens',
+                'hallPostScreens',
+                'lectureScreens'   // новое поле
+            ];
+            for (let id of fields) {
+                const value = document.getElementById(id).value.trim();
+                if (!value) {
+                    let fieldName = '';
+                    switch (id) {
+                        case 'fullnameCid': fieldName = 'Имя и Фамилия | CID'; break;
+                        case 'dependencyScreens': fieldName = 'Зависимость (скриншоты)'; break;
+                        case 'mpGmpScreens': fieldName = 'Участие в МП/ГМП'; break;
+                        case 'armyRecruitScreens': fieldName = 'Участие в наборе Армии'; break;
+                        case 'reviveScreens': fieldName = 'Реанимация'; break;
+                        case 'hallPostScreens': fieldName = 'Пост в Холле'; break;
+                        case 'lectureScreens': fieldName = 'Лекции'; break;
+                    }
+                    alert(`Пожалуйста, заполните поле "${fieldName}".`);
+                    return false;
                 }
-                alert(`Пожалуйста, заполните поле "${fieldName}".`);
-                return false;
             }
+            return true;
         }
-        return true;
-    }
 
-    // Функция обновления embed-предпросмотра
-    function updateWeeklyEmbed() {
-        document.getElementById('previewFullname').innerText = document.getElementById('fullnameCid').value.trim() || '—';
-        document.getElementById('previewDependency').innerText = document.getElementById('dependencyScreens').value.trim() || '—';
-        document.getElementById('previewMpGmp').innerText = document.getElementById('mpGmpScreens').value.trim() || '—';
-        document.getElementById('previewArmy').innerText = document.getElementById('armyRecruitScreens').value.trim() || '—';
-        document.getElementById('previewRevive').innerText = document.getElementById('reviveScreens').value.trim() || '—';
-        document.getElementById('previewHallPost').innerText = document.getElementById('hallPostScreens').value.trim() || '—';
-    }
+        function updateWeeklyEmbed() {
+            document.getElementById('previewFullname').innerText = document.getElementById('fullnameCid').value.trim() || '—';
+            document.getElementById('previewDependency').innerText = document.getElementById('dependencyScreens').value.trim() || '—';
+            document.getElementById('previewMpGmp').innerText = document.getElementById('mpGmpScreens').value.trim() || '—';
+            document.getElementById('previewArmy').innerText = document.getElementById('armyRecruitScreens').value.trim() || '—';
+            document.getElementById('previewRevive').innerText = document.getElementById('reviveScreens').value.trim() || '—';
+            document.getElementById('previewHallPost').innerText = document.getElementById('hallPostScreens').value.trim() || '—';
+            document.getElementById('previewLecture').innerText = document.getElementById('lectureScreens').value.trim() || '—';
+        }
 
-    // Слушатели для предпросмотра
-    document.querySelectorAll('.form-control').forEach(el => {
-        el.addEventListener('input', updateWeeklyEmbed);
-    });
-
-    // Отправка в Discord
-    document.getElementById('sendWeeklyReportBtn').addEventListener('click', function() {
-        if (!validateWeeklyForm()) return;
-
-        // Актуализируем предпросмотр (на всякий случай)
-        updateWeeklyEmbed();
-
-        // Собираем данные
-        const fullname = document.getElementById('fullnameCid').value.trim();
-        const dependency = document.getElementById('dependencyScreens').value.trim();
-        const mpGmp = document.getElementById('mpGmpScreens').value.trim();
-        const army = document.getElementById('armyRecruitScreens').value.trim();
-        const revive = document.getElementById('reviveScreens').value.trim();
-        const hallPost = document.getElementById('hallPostScreens').value.trim();
-
-        // Формируем Embed
-        const embed = {
-            title: '📋 Еженедельный отчёт',
-            color: 0x9b59b6, // фиолетовый
-            fields: [
-                { name: '👤 Имя и CID', value: fullname, inline: false },
-                { name: '🆘 Зависимость (скриншоты)', value: dependency, inline: false },
-                { name: '🚑 Участие в МП/ГМП', value: mpGmp, inline: false },
-                { name: '🎖️ Участие в наборе Армии', value: army, inline: false },
-                { name: '❤️ Реанимация', value: revive, inline: false },
-                { name: '📢 Пост в Холле 1ч+', value: hallPost, inline: false }
-            ],
-            footer: { text: 'Hospital Academy' },
-            timestamp: new Date().toISOString()
-        };
-
-        const payload = {
-            content: '<@&1412079127951048805> <@&1412081593727717438>',
-            embeds: [embed]
-        };
-        
-        // Отправка
-        fetch(webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ embeds: [embed] })
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('✅ Еженедельный отчёт успешно отправлен в Discord!');
-            } else {
-                alert('❌ Ошибка при отправке. Проверьте Webhook URL.');
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            alert('❌ Ошибка сети или неверный Webhook URL.');
+        document.querySelectorAll('.form-control').forEach(el => {
+            el.addEventListener('input', updateWeeklyEmbed);
         });
-    });
 
-    // Начальное обновление (прочерки)
-    window.addEventListener('load', updateWeeklyEmbed);
-</script>
+        document.getElementById('sendWeeklyReportBtn').addEventListener('click', function() {
+            if (!validateWeeklyForm()) return;
+            updateWeeklyEmbed();
+
+            const fullname = document.getElementById('fullnameCid').value.trim();
+            const dependency = document.getElementById('dependencyScreens').value.trim();
+            const mpGmp = document.getElementById('mpGmpScreens').value.trim();
+            const army = document.getElementById('armyRecruitScreens').value.trim();
+            const revive = document.getElementById('reviveScreens').value.trim();
+            const hallPost = document.getElementById('hallPostScreens').value.trim();
+            const lecture = document.getElementById('lectureScreens').value.trim();
+
+            const embed = {
+                title: '📋 Еженедельный отчёт',
+                color: 0x9b59b6,
+                fields: [
+                    { name: '👤 Имя и CID', value: fullname, inline: false },
+                    { name: '🆘 Зависимость (скриншоты)', value: dependency, inline: false },
+                    { name: '🚑 Участие в МП/ГМП', value: mpGmp, inline: false },
+                    { name: '🎖️ Участие в наборе Армии', value: army, inline: false },
+                    { name: '❤️ Реанимация', value: revive, inline: false },
+                    { name: '📢 Пост в Холле 1ч+', value: hallPost, inline: false },
+                    { name: '📚 Лекции (скриншоты)', value: lecture, inline: false }
+                ],
+                footer: { text: 'Hospital Academy' },
+                timestamp: new Date().toISOString()
+            };
+
+            const payload = {
+                content: '<@&1412079127951048805> <@&1412081593727717438>',
+                embeds: [embed]
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('✅ Еженедельный отчёт успешно отправлен в Discord!');
+                } else {
+                    alert('❌ Ошибка при отправке. Проверьте Webhook URL.');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('❌ Ошибка сети или неверный Webhook URL.');
+            });
+        });
+
+        window.addEventListener('load', updateWeeklyEmbed);
+    </script>
 </body>
-
 </html>
-
-
