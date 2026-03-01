@@ -482,6 +482,11 @@
             timestamp: new Date().toISOString()
         };
 
+        const payload = {
+            content: '<@&1412079127951048805> <@&1412081593727717438>',
+            embeds: [embed]
+        };
+        
         // Отправка
         fetch(webhookUrl, {
             method: 'POST',
@@ -507,4 +512,5 @@
 </body>
 
 </html>
+
 
