@@ -166,34 +166,6 @@
             width: 28px;
         }
 
-        /* Чекбоксы для экзаменов */
-        .checkbox-group {
-            background: white;
-            border: 2px solid #dcd0e6;
-            border-radius: 28px;
-            padding: 20px 24px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px 35px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.1rem;
-            color: #2c3e50;
-            cursor: pointer;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #9b59b6;
-            cursor: pointer;
-        }
-
         /* радио для результата */
         .radio-group {
             display: flex;
@@ -345,10 +317,6 @@
             .field-group.full-width {
                 grid-column: span 1;
             }
-            .checkbox-group {
-                flex-direction: column;
-                gap: 12px;
-            }
         }
     </style>
 </head>
@@ -385,31 +353,6 @@
                     <input type="text" class="form-control" id="student" placeholder="Имя Фамилия | CID" value="">
                 </div>
 
-                <!-- 📚 Список экзаменов (множественный выбор) -->
-                <div class="field-group full-width">
-                    <span class="field-label"><i class="fas fa-book"></i> Список экзаменов</span>
-                    <div class="checkbox-group" id="examCheckboxes">
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="exam" value="📕 Клятва Врача"> 📕 Клятва Врача
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="exam" value="📔 Устав"> 📔 Устав
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="exam" value="💊 Медикаменты"> 💊 Медикаменты
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="exam" value="📗 Тен-коды"> 📗 Тен-коды
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="exam" value="🚑 Транспорт больницы"> 🚑 Транспорт больницы
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="exam" value="📘 Положение об использовании радиосвязи"> 📘 Положение об использовании радиосвязи
-                        </label>
-                    </div>
-                </div>
-
                 <!-- 📌 Результат (Сдал / Не сдал) -->
                 <div class="field-group full-width">
                     <span class="field-label"><i class="fas fa-clipboard-check"></i> Результат</span>
@@ -441,10 +384,6 @@
                         <span class="embed-field-value" id="previewStudent">—</span>
                     </div>
                     <div class="embed-field">
-                        <span class="embed-field-name">📚 Экзамены</span>
-                        <span class="embed-field-value" id="previewExams">—</span>
-                    </div>
-                    <div class="embed-field">
                         <span class="embed-field-name">📌 Результат</span>
                         <span class="embed-field-value" id="previewResult">—</span>
                     </div>
@@ -461,21 +400,13 @@
     // ⚠️ ВСТАВЬТЕ СВОЙ WEBHOOK URL СЮДА
     const webhookUrl = 'https://discord.com/api/webhooks/1421632469441970246/u5uI3yfJA21TOvsJkpw_wi6tRWVICMDnDs4IGVrfb9Lzde-6mg6-PNBt5LUOX_hsTuOw';
 
-    function getSelectedExams() {
-        const checkboxes = document.querySelectorAll('input[name="exam"]:checked');
-        const exams = Array.from(checkboxes).map(cb => cb.value);
-        return exams.length ? exams.join(', ') : '';
-    }
-
     function validateExamForm() {
         const examiner = document.getElementById('examiner').value.trim();
         const student = document.getElementById('student').value.trim();
-        const exams = getSelectedExams();
         const resultRadio = document.querySelector('input[name="result"]:checked');
 
         if (!examiner) { alert('Укажите, кто принимал экзамен.'); return false; }
         if (!student) { alert('Укажите, у кого принимали экзамен.'); return false; }
-        if (!exams) { alert('Выберите хотя бы один экзамен.'); return false; }
         if (!resultRadio) { alert('Выберите результат.'); return false; }
         return true;
     }
@@ -483,12 +414,11 @@
     function updateExamEmbed() {
         document.getElementById('previewExaminer').innerText = document.getElementById('examiner').value.trim() || '—';
         document.getElementById('previewStudent').innerText = document.getElementById('student').value.trim() || '—';
-        document.getElementById('previewExams').innerText = getSelectedExams() || '—';
         const resultRadio = document.querySelector('input[name="result"]:checked');
         document.getElementById('previewResult').innerText = resultRadio ? resultRadio.value : '—';
     }
 
-    document.querySelectorAll('.form-control, input[name="exam"], input[name="result"]').forEach(el => {
+    document.querySelectorAll('.form-control, input[name="result"]').forEach(el => {
         el.addEventListener('input', updateExamEmbed);
         el.addEventListener('change', updateExamEmbed);
     });
@@ -500,7 +430,6 @@
 
         const examiner = document.getElementById('examiner').value.trim();
         const student = document.getElementById('student').value.trim();
-        const exams = getSelectedExams();
         const result = document.querySelector('input[name="result"]:checked').value;
 
         const embed = {
@@ -509,18 +438,12 @@
             fields: [
                 { name: '👨‍⚕️ Принимал', value: examiner, inline: false },
                 { name: '🧑‍🎓 Студент', value: student, inline: false },
-                { name: '📚 Экзамены', value: exams, inline: false },
                 { name: '📌 Результат', value: result, inline: false }
             ],
             footer: { text: 'Hospital Academy' },
             timestamp: new Date().toISOString()
         };
 
-        const payload = {
-            content: '<@&1412079127951048805> <@&1412081593727717438>',
-            embeds: [embed]
-        };
-        
         fetch(webhookUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -542,7 +465,4 @@
     window.addEventListener('load', updateExamEmbed);
 </script>
 </body>
-
 </html>
-
-
