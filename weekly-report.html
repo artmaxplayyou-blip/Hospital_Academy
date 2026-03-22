@@ -187,7 +187,7 @@
 
         textarea.form-control {
             resize: vertical;
-            min-height: 100px;
+            min-height: 80px;
         }
 
         .submit-area {
@@ -355,6 +355,42 @@
                     <textarea class="form-control" id="reviveScreens" rows="2" placeholder="Ссылки на скриншоты"></textarea>
                 </div>
 
+                <!-- Выдача таблеток -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-capsules"></i> Выдача таблеток</span>
+                    <textarea class="form-control" id="medicationScreens" rows="2" placeholder="Ссылки на скриншоты выдачи таблеток"></textarea>
+                </div>
+
+                <!-- Приезд на вызов -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-truck-medical"></i> Приезд на вызов</span>
+                    <textarea class="form-control" id="callArrivalScreens" rows="2" placeholder="Ссылки на скриншоты выездов/приездов"></textarea>
+                </div>
+
+                <!-- Участие в поставках -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-boxes"></i> Участие в поставках</span>
+                    <textarea class="form-control" id="supplyScreens" rows="2" placeholder="Ссылки на скриншоты участия в поставках"></textarea>
+                </div>
+
+                <!-- Проведение операции -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-syringe"></i> Проведение операции</span>
+                    <textarea class="form-control" id="operationScreens" rows="2" placeholder="Ссылки на скриншоты операций"></textarea>
+                </div>
+
+                <!-- Принято людей -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-users"></i> Принято людей</span>
+                    <textarea class="form-control" id="peopleAcceptedScreens" rows="2" placeholder="Ссылки на скриншоты принятых людей"></textarea>
+                </div>
+
+                <!-- Проведено наборов -->
+                <div class="field-group full-width">
+                    <span class="field-label"><i class="fas fa-chalkboard-user"></i> Проведено наборов</span>
+                    <textarea class="form-control" id="recruitmentScreens" rows="2" placeholder="Ссылки на скриншоты проведённых наборов"></textarea>
+                </div>
+
                 <!-- Пост в Холле 1 час+ (скриншоты каждые 20 минут) (Минимум 3 скриншота) -->
                 <div class="field-group full-width">
                     <span class="field-label"><i class="fas fa-bullhorn"></i> Пост в Холле 1 час+ (скриншоты каждые 20 минут, минимум 3)</span>
@@ -397,6 +433,30 @@
                         <span class="embed-field-value" id="previewRevive">—</span>
                     </div>
                     <div class="embed-field">
+                        <span class="embed-field-name">💊 Выдача таблеток</span>
+                        <span class="embed-field-value" id="previewMedication">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">🚨 Приезд на вызов</span>
+                        <span class="embed-field-value" id="previewCallArrival">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">📦 Участие в поставках</span>
+                        <span class="embed-field-value" id="previewSupply">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">🩺 Проведение операции</span>
+                        <span class="embed-field-value" id="previewOperation">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">👥 Принято людей</span>
+                        <span class="embed-field-value" id="previewPeopleAccepted">—</span>
+                    </div>
+                    <div class="embed-field">
+                        <span class="embed-field-name">📢 Проведено наборов</span>
+                        <span class="embed-field-value" id="previewRecruitment">—</span>
+                    </div>
+                    <div class="embed-field">
                         <span class="embed-field-name">📢 Пост в Холле</span>
                         <span class="embed-field-value" id="previewHallPost">—</span>
                     </div>
@@ -424,8 +484,14 @@
                 'mpGmpScreens',
                 'armyRecruitScreens',
                 'reviveScreens',
+                'medicationScreens',
+                'callArrivalScreens',
+                'supplyScreens',
+                'operationScreens',
+                'peopleAcceptedScreens',
+                'recruitmentScreens',
                 'hallPostScreens',
-                'lectureScreens'   // новое поле
+                'lectureScreens'
             ];
             for (let id of fields) {
                 const value = document.getElementById(id).value.trim();
@@ -437,6 +503,12 @@
                         case 'mpGmpScreens': fieldName = 'Участие в МП/ГМП'; break;
                         case 'armyRecruitScreens': fieldName = 'Участие в наборе Армии'; break;
                         case 'reviveScreens': fieldName = 'Реанимация'; break;
+                        case 'medicationScreens': fieldName = 'Выдача таблеток'; break;
+                        case 'callArrivalScreens': fieldName = 'Приезд на вызов'; break;
+                        case 'supplyScreens': fieldName = 'Участие в поставках'; break;
+                        case 'operationScreens': fieldName = 'Проведение операции'; break;
+                        case 'peopleAcceptedScreens': fieldName = 'Принято людей'; break;
+                        case 'recruitmentScreens': fieldName = 'Проведено наборов'; break;
                         case 'hallPostScreens': fieldName = 'Пост в Холле'; break;
                         case 'lectureScreens': fieldName = 'Лекции'; break;
                     }
@@ -453,6 +525,12 @@
             document.getElementById('previewMpGmp').innerText = document.getElementById('mpGmpScreens').value.trim() || '—';
             document.getElementById('previewArmy').innerText = document.getElementById('armyRecruitScreens').value.trim() || '—';
             document.getElementById('previewRevive').innerText = document.getElementById('reviveScreens').value.trim() || '—';
+            document.getElementById('previewMedication').innerText = document.getElementById('medicationScreens').value.trim() || '—';
+            document.getElementById('previewCallArrival').innerText = document.getElementById('callArrivalScreens').value.trim() || '—';
+            document.getElementById('previewSupply').innerText = document.getElementById('supplyScreens').value.trim() || '—';
+            document.getElementById('previewOperation').innerText = document.getElementById('operationScreens').value.trim() || '—';
+            document.getElementById('previewPeopleAccepted').innerText = document.getElementById('peopleAcceptedScreens').value.trim() || '—';
+            document.getElementById('previewRecruitment').innerText = document.getElementById('recruitmentScreens').value.trim() || '—';
             document.getElementById('previewHallPost').innerText = document.getElementById('hallPostScreens').value.trim() || '—';
             document.getElementById('previewLecture').innerText = document.getElementById('lectureScreens').value.trim() || '—';
         }
@@ -470,6 +548,12 @@
             const mpGmp = document.getElementById('mpGmpScreens').value.trim();
             const army = document.getElementById('armyRecruitScreens').value.trim();
             const revive = document.getElementById('reviveScreens').value.trim();
+            const medication = document.getElementById('medicationScreens').value.trim();
+            const callArrival = document.getElementById('callArrivalScreens').value.trim();
+            const supply = document.getElementById('supplyScreens').value.trim();
+            const operation = document.getElementById('operationScreens').value.trim();
+            const peopleAccepted = document.getElementById('peopleAcceptedScreens').value.trim();
+            const recruitment = document.getElementById('recruitmentScreens').value.trim();
             const hallPost = document.getElementById('hallPostScreens').value.trim();
             const lecture = document.getElementById('lectureScreens').value.trim();
 
@@ -482,6 +566,12 @@
                     { name: '🚑 Участие в МП/ГМП', value: mpGmp, inline: false },
                     { name: '🎖️ Участие в наборе Армии', value: army, inline: false },
                     { name: '❤️ Реанимация', value: revive, inline: false },
+                    { name: '💊 Выдача таблеток', value: medication, inline: false },
+                    { name: '🚨 Приезд на вызов', value: callArrival, inline: false },
+                    { name: '📦 Участие в поставках', value: supply, inline: false },
+                    { name: '🩺 Проведение операции', value: operation, inline: false },
+                    { name: '👥 Принято людей', value: peopleAccepted, inline: false },
+                    { name: '📢 Проведено наборов', value: recruitment, inline: false },
                     { name: '📢 Пост в Холле 1ч+', value: hallPost, inline: false },
                     { name: '📚 Лекции (скриншоты)', value: lecture, inline: false }
                 ],
